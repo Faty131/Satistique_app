@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tests Statistiques</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <!-- Barre de Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'accueil' %}">Statistiques</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'accueil' %}">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'upload_file' %}">Calculs Statistiques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'perform_laws' %}">Calculs des Lois</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'upload_file' %}">Visualisations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'perform_tests' %}">Tests Statistiques</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+
+    <div class="container py-5">
+        <h2 class="text-center mb-4">📊 Tests Statistiques</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Formulaire -->
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="n" class="form-label">Taille de l'échantillon (n) :</label>
+                        <input type="number" id="n" name="n" class="form-control" min="2" required value="{{ form_data.n|default:'' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="mean" class="form-label">Moyenne hypothétique (μ) :</label>
+                        <input type="number" id="mean" name="mean" class="form-control" step="0.01" required value="{{ form_data.mean|default:'' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="std_dev" class="form-label">Écart-type (σ) :</label>
+                        <input type="number" id="std_dev" name="std_dev" class="form-control" step="0.01" required value="{{ form_data.std_dev|default:'' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="sample_mean" class="form-label">Moyenne de l'échantillon :</label>
+                        <input type="number" id="sample_mean" name="sample_mean" class="form-control" step="0.01" required value="{{ form_data.sample_mean|default:'' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confidence" class="form-label">Niveau de confiance (%) :</label>
+                        <input type="number" id="confidence" name="confidence" class="form-control" step="0.1" min="50" max="99.9" required value="{{ form_data.confidence|default:'' }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Calculer</button>
+                    <button type="submit" name="update" class="btn btn-danger w-100 mt-2">Réinitialiser</button>
+                </form>
+
+                <!-- Affichage des résultats -->
+                {% if error %}
+                <div class="alert alert-danger mt-4">
+                    {{ error }}
+                </div>
+                {% endif %}
+                {% if result %}
+                <div class="mt-4">
+                    <h4 class="text-center">{{ result.test }}</h4>
+                    <p><strong>Équation :</strong> {{ result.equation }}</p>
+                    <p><strong>Équation Substituée :</strong> {{ result.substituted_equation }}</p>
+                    <p><strong>Statistique :</strong> {{ result.stat }}</p>
+                    <p><strong>P-Value :</strong> {{ result.p_value }}</p>
+                    <p><strong>Intervalle de Confiance :</strong> [{{ result.ci.0 }} , {{ result.ci.1 }}]</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculs Statistiques</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<!-- Barre de Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'accueil' %}">Statistiques</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'accueil' %}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'upload_file' %}">Calculs Statistiques</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'perform_laws' %}">Calculs des Lois</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'upload_file' %}">Visualisations</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'perform_tests' %}">Tests Statistiques</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Calculs Statistiques</h2>
+
+        <!-- Formulaire -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- Choix des colonnes -->
+                    <div class="mb-3">
+                        <label for="columns" class="form-label">Choisissez une colonne :</label>
+                        <select name="columns" id="columns" class="form-select" required>
+                            <option value="" disabled selected>-- Sélectionnez une colonne --</option>
+                            {% for col in columns %}
+                                <option value="{{ col }}" {% if col in selected_columns %}selected{% endif %}>{{ col }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Choix des calculs -->
+                    <div class="mb-3">
+                        <label for="calculations" class="form-label">Choisissez un calcul :</label>
+                        <select name="calculations" id="calculations" class="form-select" required>
+                            <option value="" disabled selected>-- Sélectionnez un calcul --</option>
+                            <option value="mean" {% if "mean" in selected_calculations %}selected{% endif %}>Moyenne</option>
+                            <option value="median" {% if "median" in selected_calculations %}selected{% endif %}>Médiane</option>
+                            <option value="variance" {% if "variance" in selected_calculations %}selected{% endif %}>Variance</option>
+                            <option value="std_dev" {% if "std_dev" in selected_calculations %}selected{% endif %}>Écart-type</option>
+                            <option value="range" {% if "range" in selected_calculations %}selected{% endif %}>Étendue</option>
+                            <option value="mode" {% if "mode" in selected_calculations %}selected{% endif %}>Mode</option>
+                            <option value="expectation" {% if "expectation" in selected_calculations %}selected{% endif %}>Espérance</option>
+                        </select>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Calculer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Résultats -->
+        {% if results %}
+        <div class="mt-5">
+            <h3 class="text-center">Résultats :</h3>
+            <table class="table table-bordered table-striped mt-3">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>Colonne</th>
+                        <th>Calcul</th>
+                        <th>Résultat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for col, calculations in results.items %}
+                    {% for calc_name, value in calculations.items %}
+                    <tr>
+                        <td>{{ col }}</td>
+                        <td>{{ calc_name }}</td>
+                        <td>{{ value|floatformat:5 }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

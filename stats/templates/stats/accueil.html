@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - Statistiques et Visualisation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5em;
+            color: #fff !important;
+        }
+        .card-title {
+            font-size: 1.25rem;
+        }
+        .card-text {
+            font-size: 0.95rem;
+            color: #6c757d;
+        }
+        section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- Barre de Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'accueil' %}">Statistiques</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'accueil' %}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'upload_file' %}">Calculs Statistiques</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'perform_laws' %}">Calculs des Lois</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'upload_file' %}">Visualisations</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'perform_tests' %}">Tests Statistiques</a>
+                </li>
+          
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+    <!-- Section d'introduction -->
+    <header class="py-5 text-center bg-light">
+        <div class="container">
+            <h1 class="display-4">Bienvenue dans l'Analyse et la Visualisation</h1>
+            <p class="lead text-secondary">Explorez, analysez et visualisez vos données en quelques clics.</p>
+        </div>
+    </header>
+
+    <!-- Tableau de Bord -->
+    <section class="mt-4">
+        <div class="container">
+            <h2 class="text-center mb-5">Tableau de Bord</h2>
+            <div class="row g-4 justify-content-center">
+                <!-- Carte 1 -->
+                <div class="col-md-3">
+                    <div class="card text-center shadow border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">Calculs Statistiques</h5>
+                            <p class="card-text">Effectuez des calculs statistiques sur vos données.</p>
+                            <a href="{% url 'upload_file' %}" class="btn btn-primary">Calculer</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte 2 -->
+                <div class="col-md-3">
+                    <div class="card text-center shadow border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">Calculs des Lois</h5>
+                            <p class="card-text">Appliquez des lois statistiques à vos données.</p>
+                            <a href="{% url 'perform_laws' %}" class="btn btn-primary">Appliquer</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carte 3 -->
+                <div class="col-md-3">
+                    <div class="card text-center shadow border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">Visualisations</h5>
+                            <p class="card-text">Créez des graphiques interactifs pour vos données.</p>
+                            <a href="{% url 'upload_file' %}" class="btn btn-primary">Visualiser</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

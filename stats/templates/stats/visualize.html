@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualisations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<!-- Barre de Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'accueil' %}">Statistiques</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'accueil' %}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'upload_file' %}">Calculs Statistiques</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'perform_laws' %}">Calculs des Lois</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'upload_file' %}">Visualisations</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'perform_tests' %}">Tests Statistiques</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <h2 class="text-center mb-4">Visualisation des Données</h2>
+
+        <!-- Formulaire -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="columns" class="form-label">Choisissez les colonnes :</label>
+                        <div class="form-check">
+                            {% for col in columns %}
+                                <input class="form-check-input" type="checkbox" name="columns" value="{{ col }}" id="col-{{ col }}">
+                                <label class="form-check-label" for="col-{{ col }}">{{ col }}</label><br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="plot_type" class="form-label">Type de graphique :</label>
+                        <select class="form-select" name="plot_type" id="plot_type" required>
+                            <option value="histogram">Histogramme</option>
+                            <option value="kde">Densité (KDE)</option>
+                            <option value="boxplot">Boxplot</option>
+                            <option value="bar">Barres</option>
+                            <option value="line">Courbes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Visualiser</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Résultats -->
+        {% if image_base64 %}
+        <div class="mt-5 text-center">
+            <h3>Graphique :</h3>
+            <img src="data:image/png;base64,{{ image_base64 }}" alt="Graphique" class="img-fluid rounded">
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

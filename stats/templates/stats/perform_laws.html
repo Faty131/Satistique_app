@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculs des Lois</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<!-- Barre de Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'accueil' %}">Statistiques</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'accueil' %}">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'upload_file' %}">Calculs Statistiques</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'perform_laws' %}">Calculs des Lois</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'upload_file' %}">Visualisations</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'perform_tests' %}">Tests Statistiques</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="container py-5">
+        <h2 class="text-center">Calculs des Lois</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="law-select" class="form-label">Choisissez une loi :</label>
+                <select name="law" id="law-select" class="form-select" onchange="toggleLawParams()" required>
+                    <option value="">-- Sélectionnez une loi --</option>
+                    <option value="binomial">Loi Binomiale</option>
+                    <option value="bernoulli">Loi de Bernoulli</option>
+                    <option value="poisson">Loi de Poisson</option>
+                    <option value="uniform_discrete">Loi Uniforme (Discrète)</option>
+                    <option value="uniform_continuous">Loi Uniforme (Continue)</option>
+                    <option value="exponential">Loi Exponentielle</option>
+                    <option value="normal">Loi Normale</option>
+                </select>
+            </div>
+
+            <!-- Paramètres dynamiques -->
+            <div id="binomial-params" style="display: none;">
+                <h4>Loi Binomiale</h4>
+                <label for="n" class="form-label">n :</label>
+                <input type="number" name="n" id="n" class="form-control" min="1" value="10" required>
+                <label for="p" class="form-label">p :</label>
+                <input type="number" name="p" id="p" class="form-control" step="0.01" min="0" max="1" value="0.5" required>
+            </div>
+
+            <div id="bernoulli-params" style="display: none;">
+                <h4>Loi de Bernoulli</h4>
+                <label for="p" class="form-label">p :</label>
+                <input type="number" name="p" id="p-bernoulli" class="form-control" step="0.01" min="0" max="1" value="0.5" required>
+            </div>
+
+            <div id="poisson-params" style="display: none;">
+                <h4>Loi de Poisson</h4>
+                <label for="lambda" class="form-label">λ :</label>
+                <input type="number" name="lambda" id="lambda" class="form-control" step="0.1" min="0" value="5" required>
+            </div>
+
+            <div id="uniform-discrete-params" style="display: none;">
+                <h4>Loi Uniforme (Discrète)</h4>
+                <label for="a" class="form-label">a :</label>
+                <input type="number" name="a" id="a-uniform-discrete" class="form-control" value="0" required>
+                <label for="b" class="form-label">b :</label>
+                <input type="number" name="b" id="b-uniform-discrete" class="form-control" value="10" required>
+            </div>
+
+            <div id="uniform-continuous-params" style="display: none;">
+                <h4>Loi Uniforme (Continue)</h4>
+                <label for="a" class="form-label">a :</label>
+                <input type="number" name="a" id="a-uniform-continuous" class="form-control" step="0.1" value="0" required>
+                <label for="b" class="form-label">b :</label>
+                <input type="number" name="b" id="b-uniform-continuous" class="form-control" step="0.1" value="10" required>
+            </div>
+
+            <div id="exponential-params" style="display: none;">
+                <h4>Loi Exponentielle</h4>
+                <label for="scale" class="form-label">Échelle :</label>
+                <input type="number" name="scale" id="scale" class="form-control" step="0.1" min="0" value="1" required>
+            </div>
+
+            <div id="normal-params" style="display: none;">
+                <h4>Loi Normale</h4>
+                <label for="mu" class="form-label">μ :</label>
+                <input type="number" name="mu" id="mu" class="form-control" step="0.1" value="0" required>
+                <label for="sigma" class="form-label">σ :</label>
+                <input type="number" name="sigma" id="sigma" class="form-control" step="0.1" min="0.1" value="1" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Calculer</button>
+        </form>
+<!-- Résultats -->
+{% if equation and substituted_equation and result_value %}
+<div class="mt-5">
+    <h3>Résultats :</h3>
+    <ul>
+        <li><strong>Loi :</strong> {{ law }}</li>
+        <li><strong>Équation Générale :</strong> $$ {{ equation }} $$</li>
+        <li><strong>Équation avec les Valeurs Remplacées :</strong> $$ {{ substituted_equation }} $$</li>
+        <li><strong>Résultat Calculé :</strong> {{ result_value }}</li>
+    </ul>
+</div>
+{% endif %}
+
+{% if image_base64 %}
+<div class="mt-5 text-center">
+    <h4>Graphique de la Loi</h4>
+    <img src="data:image/png;base64,{{ image_base64 }}" alt="Graphique" class="img-fluid">
+</div>
+{% endif %}
+
+
+
+    </div>
+
+    <script>
+        function toggleLawParams() {
+            const law = document.getElementById('law-select').value;
+
+            // Masquer tous les paramètres
+            document.getElementById('binomial-params').style.display = 'none';
+            document.getElementById('bernoulli-params').style.display = 'none';
+            document.getElementById('poisson-params').style.display = 'none';
+            document.getElementById('uniform-discrete-params').style.display = 'none';
+            document.getElementById('uniform-continuous-params').style.display = 'none';
+            document.getElementById('exponential-params').style.display = 'none';
+            document.getElementById('normal-params').style.display = 'none';
+
+            // Afficher les paramètres correspondants
+            if (law === 'binomial') {
+                document.getElementById('binomial-params').style.display = 'block';
+            } else if (law === 'bernoulli') {
+                document.getElementById('bernoulli-params').style.display = 'block';
+            } else if (law === 'poisson') {
+                document.getElementById('poisson-params').style.display = 'block';
+            } else if (law === 'uniform_discrete') {
+                document.getElementById('uniform-discrete-params').style.display = 'block';
+            } else if (law === 'uniform_continuous') {
+                document.getElementById('uniform-continuous-params').style.display = 'block';
+            } else if (law === 'exponential') {
+                document.getElementById('exponential-params').style.display = 'block';
+            } else if (law === 'normal') {
+                document.getElementById('normal-params').style.display = 'block';
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js">
+</script>
+
+</body>
+</html>
