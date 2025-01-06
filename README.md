@@ -1,0 +1,1 @@
+<p>ce projet permet d'importer un fichier et de faire soit les calcules statistiques comme la variance la moyenne.. ou bien visualiser les donnes dans des diffrent diagrammes et aussi il permet d'effectuer le calcul des lois et des tests </p>
